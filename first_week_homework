@@ -1,0 +1,187 @@
+MOVE #655,A1 
+move.b #10,d0
+move #255, D1
+move.b D1, (A1)
+add #129,a1
+sub #20,d1
+dec d0
+bgt 16390|单字的第一笔
+MOVE #674,A1 
+move.b #10,d0
+move #255, D1
+move.b D1, (A1)
+add #127,a1
+sub #20,d1
+dec d0
+bgt 16404|单字的第二笔
+MOVE #1807,A1 
+move #3727,a2
+move #2703,a3
+move.b #20,d0
+move #255, D1
+move.b D1, (A1)
+move.b d1,(a2)
+move.b d1,(a3)
+inc a1
+inc a2
+inc a3
+sub #10,d1
+dec d0
+bgt 16422|单字的三横笔
+MOVE #1807,A1 
+move #1826,a2
+move.b #15,d0
+move #255, D1
+move.b D1, (A1) 
+move.b d1,(a2) 
+add #128,a1 
+add #128,a2 
+sub #15,d1 
+dec d0 
+bgt 16441|两竖笔 450
+move #1816,a1 |452
+move #4106,a2 |454
+move.b #30,d0 |456
+move #255, D1 |458
+move.b D1, (A1) |460
+move.b d1,(a2)
+add #128,a1
+inc a2
+sub #5,d1
+dec d0
+bgt 16460     |16468 最长的横竖
+move #2753,a1
+move a1,a2
+sub #128,a2
+move.b #30,d0
+move #255, D1
+move.b D1, (A1) 
+move.b D1, (A2) 
+inc a1
+inc a2
+sub #5,d1
+dec d0
+bgt 16479| 一
+move #8216,a1
+move a1,a2
+move a2,a3
+sub #127,a2
+sub #127,a2
+sub #127,a2
+move #20,d0
+move #255,d1
+move d1,(a2)
+add #127,a2
+sub #10,d1
+dec d0
+bgt 16502|个的撇
+move #17,d0
+move #255,d1
+move d1,(a1)
+add #129,a1
+sub #10,d1
+dec d0
+bgt 16514|捺
+move #30,d0
+move #255,d1
+move d1,(a3)
+add #128,a3
+sub #5,d1
+dec d0
+bgt 16526|竖
+move #8266,a1
+move #10186,a2
+move #12106,a3
+move #255,d1
+move #15,d0
+move.b d1,(a1)
+move.b d1,(a2)
+move.b d1,(a3)
+inc a1
+inc a2
+inc a3
+sub #5,d1
+dec d0
+bgt 16544|三横
+move #8266,a1
+move #255,d1
+move #30,d0
+move.b d1,(a1)
+add #128,a1
+sub #5,d1
+dec d0
+bgt 16561|竖
+move #10200,a1
+move #255,d1
+move #15,d0
+move.b d1,(a1)
+add #128,a1
+sub #5,d1
+dec d0
+bgt 16575|小竖
+move #7114,a1
+move #255,d1
+move #4,d0
+move.b d1,(a1)
+add #128,a1
+sub #30,d1
+dec d0
+bgt 16589|拼音的l竖
+move #7626,a1
+move #255,d1
+move #3,d0
+move.b d1,(a1)
+inc a1
+sub #30,d1
+dec d0
+move.b d1,(a1)
+inc a1
+sub #30,d1
+dec d0
+move.b d1,(a1)
+inc a1
+sub #30,d1
+dec d0|l的横
+move #7119,a1
+move #255,d1
+move #3,d0
+move.b d1,(a1)
+add #128,a1
+sub #30,d1
+dec d0
+move #7375,a1
+move.b d1,(a1)
+add #128,a1
+sub #30,d1
+dec d0
+move.b d1,(a1)
+add #128,a1
+sub #30,d1
+dec d0
+move.b d1,(a1)
+add #128,a1
+sub #30,d1
+dec d0|liu 的 i
+move #7378,a1
+move #7380,a2
+move #255,d1
+move.b d1,(a1)
+move.b d1,(a2)
+add #128,a1
+add #128,a2
+sub #30,d1
+move.b d1,(a1)
+move.b d1,(a2)
+add #128,a1
+add #128,a2
+sub #30,d1
+move.b d1,(a1)
+move.b d1,(a2)
+inc a1
+move.b d1,(a1)
+inc a1
+move.b d1,(a1)|u
+move #7122,a1
+move.b d1,(a1)
+add #129,a1
+move.b d1,(a1)
