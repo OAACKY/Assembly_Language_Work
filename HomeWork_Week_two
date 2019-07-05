@@ -1,0 +1,333 @@
+作业2：键盘交互功能
+1. 接受键盘按键并回显
+2. 同时显示各个键盘下的扫描码和功能码
+3. 按ESC退出，否则持续输入
+
+建议附加功能：
+1. 设计思路及时刷新CapsLock键等非激活状态键（即在没有键盘输入的情况下，主动扫描状态码，确认状态）
+2. 尝试支持屏幕设计（例如显示字符串位置）
+3. 尝试理解并处理某些字符串（例如Hello/例如ASCII 中的部分码）
+4. 根据部分功能/特定码产生交互（例如根据箭头调整显示位置）
+
+
+注：附加功能各个部分难度不等，不做特别要求，不是必须，建议量力而行。
+
+The Not Standard code:
+DATAS SEGMENT
+    a1 db 31h
+    a2 db 25h
+    a3 db 16h
+    a4 db 12h,34h,56h
+    string1 db 'The button you input is:$'
+    string2 db 'The scan key is:$'
+    string3 db 'The function key is:$'
+    notion  db 'Please press the Esc key to exit.$'
+    string4 db 'Please input the line number:$'
+    string5 db 'Please input the column number:$'
+    string6 db 'Yun Gong Yun Neng, Ri Xin Yue Yi!$'
+DATAS ENDS
+
+STACKS SEGMENT
+    ;此处输入堆栈段代码
+STACKS ENDS
+
+CODES SEGMENT
+    ASSUME CS:CODES,DS:DATAS,SS:STACKS
+     
+    
+START:
+    MOV AX,DATAS
+    MOV DS,AX
+   
+    LEA  DX,string4
+    MOV  AH,9
+    INT  21H     
+    
+    mov ah,01
+    int 21h     
+    sub al,'0' 
+    mov cl,al
+            
+    mov ah,2	
+	mov dl,10
+	int 21h      ;换行
+
+ 
+    LEA  DX,string5
+    MOV  AH,9        
+    INT  21H     
+    
+    mov ah,01
+    int 21h     
+    sub al,'0'   
+    mov ch,al
+    
+begin:    
+        
+         mov ah,02h
+         mov bx,0    
+          mov dl,ch
+         mov dh,cl
+          int 10h   
+               
+    mov ah,02
+    mov dx,0
+    int 16h
+    mov dl,al  
+    cmp dl,0
+    jnz  temp   
+    
+    mov ah,0
+    int 16h 
+                    
+     
+    cmp ah,01h
+    jz exit               
+    cmp ah,4bh
+    jz mymovel
+    cmp ah,4dh
+    jz mymover
+    cmp ah,48h
+    jz mymoveu
+    cmp ah,50h
+    jz mymoved
+    
+     jmp  myjudge 
+
+     
+myback:   push cx  
+  
+    push ax
+ 
+    LEA  DX,string1
+    MOV  AH,9
+    INT  21H
+    
+    mov ah,02h
+    mov dl,al 
+    int 21h    
+   
+    mov ah,02h
+    mov bx,0    
+    mov dl,ch
+    inc cl
+    mov dh,cl
+    int 10h    
+    
+    
+    LEA  DX,string2
+    MOV  AH,9
+    INT  21H    
+     
+    pop ax
+    
+    call scan 
+    
+    
+   
+    
+    mov ah,02h
+    mov bx,0    
+    mov dl,ch
+    inc cl
+    mov dh,cl
+    int 10h   
+    
+    LEA  DX,string3
+    MOV  AH,9        
+    INT  21H   
+      
+    mov ah,02
+    mov dx,0
+    int 16h
+    mov dl,al 
+    call sit
+   
+   
+   pop cx
+   
+   jmp begin 
+    
+exit:
+   MOV AH,4CH
+   INT 21H
+   
+scan:
+     mov dx,0
+     mov dl,ah
+sit:   push dx     
+     
+    
+     and dx,0f0h
+     ror dl,1
+     ror dl,1
+     ror dl,1
+     ror dl,1   
+     
+     add dx,'0'
+     
+     mov ah,02
+     int 21h   
+     
+     pop dx
+     and dx,0fh
+     cmp dl,9
+     jbe num
+     
+     sub dl,0ah
+     add dl,41h
+     mov ah,02
+     int 21h 
+     
+     ret
+  
+num:
+     
+     add dx,30h
+     mov ah,02
+     int 21h     
+     
+     ret 
+mymovel:
+    mov ah,15
+    int 10h
+    mov ah,0
+    int 10h
+       
+         dec ch
+          mov ah,02h
+          mov bx,0    
+          mov dl,ch
+          mov dh,cl
+          int 10h   
+          
+    jmp myback
+mymover:
+    mov ah,15
+    int 10h
+    mov ah,0
+    int 10h
+         
+         inc ch
+          mov ah,02h
+          mov bx,0    
+          mov dl,ch
+          mov dh,cl
+          int 10h   
+
+    jmp myback
+mymoveu:
+    mov ah,15
+    int 10h
+    mov ah,0
+    int 10h
+          
+          dec cl
+          mov ah,02h
+          mov bx,0    
+          mov dl,ch
+          mov dh,cl
+          int 10h    
+    jmp myback
+mymoved:     
+    mov ah,15
+    int 10h
+    mov ah,0
+    int 10h
+            
+            inc cl
+          mov ah,02h
+          mov bx,0    
+          mov dl,ch
+          mov dh,cl
+          int 10h    
+   
+    jmp myback
+
+temp:
+       mov dx,10h
+       mov bx,0
+s1:    sub bx,1
+       sbb dx,0
+       
+       cmp bx,0
+       jne  s1
+       cmp dx,0
+       jne  s1       
+
+     mov ah,0bh
+     mov al,61h
+     jmp myback
+
+
+
+myjudge:
+    
+     mov dh,ah
+     cmp dh,16h
+     jz myjudge2
+         
+      push ax  
+     jmp myback
+
+myjudge2:
+     pop dx
+     cmp dh,25h
+     jz myjudge3
+     jmp myback
+myjudge3:
+     pop dx
+     cmp dh,31h
+     jz chuli
+     jmp myback     
+
+chuli:
+      
+      push cx
+      mov cx,0h
+      mov cl,10
+      mov ah,02h
+          mov bx,0    
+          mov dl,ch
+          mov dh,cl
+          int 10h    
+          
+       LEA  DX,string6
+       MOV  AH,9
+       INT  21H
+                     
+      pop cx
+      
+        mov ah,02h
+         mov bx,0  
+          mov dl,ch
+         mov dh,cl
+          int 10h   
+       jmp myback
+   
+   CODES ENDS
+   END START
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
